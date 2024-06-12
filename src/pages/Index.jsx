@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { Container, VStack, Text, Select, Heading, SimpleGrid, Card, CardBody, Button } from "@chakra-ui/react";
-import { useJobs, useDeleteJob } from "../integrations/supabase/index.js"; // Import the useJobs and useDeleteJob hooks
+import { useJobs, useDeleteJob, supabase } from "../integrations/supabase/index.js"; // Import the useJobs, useDeleteJob hooks, and supabase
 import { useSupabaseAuth } from "../integrations/supabase/auth.jsx"; // Import the useSupabaseAuth hook
+import { useQueryClient } from "@tanstack/react-query"; // Import useQueryClient from react-query
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState(""); 
+  const queryClient = useQueryClient(); // Initialize the query client
   const { session, setSession } = useSupabaseAuth(); // Get the session from Supabase Auth
 
   useEffect(() => {
