@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
-import { Container, VStack, Text, Select, Heading, SimpleGrid, Card, CardBody } from "@chakra-ui/react";
-import { useJobs } from "../integrations/supabase/index.js"; // Import the useJobs hook
+import { Container, VStack, Text, Select, Heading, SimpleGrid, Card, CardBody, Button } from "@chakra-ui/react";
+import { useJobs, useDeleteJob } from "../integrations/supabase/index.js"; // Import the useJobs and useDeleteJob hooks
+import { useSupabaseAuth } from "../integrations/supabase/auth.jsx"; // Import the useSupabaseAuth hook
 
 const Index = () => {
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(""); 
+  const { session } = useSupabaseAuth(); // Get the session from Supabase Auth
+  const deleteJobMutation = useDeleteJob(); // Initialize the delete job mutation
   const { data: jobs, error, isLoading } = useJobs(); // Fetch jobs from Supabase
+
+  const handleDelete = (id) => {
+    deleteJobMutation.mutate(id); // Function to handle job deletion
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -41,9 +48,18 @@ const Index = () => {
             <Card key={job.id} borderWidth="1px" borderRadius="lg">
               <CardBody>
                 <Heading as="h3" size="md">
-                  <Link to={`/job/${job.id}`}>{job.jobs_title}</Link> {/* Wrap job title with Link */}
+                  <Link to={`/job/${job.id}`}>{job.jobs_title}</Link>
                 </Heading>
                 <Text mt={2}>{job.job_area}</Text>
+              {session && session.user.is_admin && ( // Show delete button if user is admin
+                  <Button
+                    mt={4}
+                    colorScheme="red"
+                    onClick={() => handleDelete(job.id)}
+                  >
+                    Delete
+                  </Button>
+                )}
               </CardBody>
             </Card>
           ))}

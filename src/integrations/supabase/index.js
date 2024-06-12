@@ -42,6 +42,11 @@ Comments // table: comments
     content: string
     event_id: number // foreign key to Events
 
+Profiles // table: profiles
+    id: string
+    updated_at: string
+    username: string
+    is_admin: boolean
 */
 
 // Hooks for Jobs table
