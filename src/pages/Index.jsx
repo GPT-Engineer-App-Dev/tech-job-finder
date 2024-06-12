@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { Container, VStack, Text, Select, Box, Heading, SimpleGrid, Card, CardBody } from "@chakra-ui/react";
 
 const jobs = [
@@ -38,7 +39,7 @@ const Index = () => {
             <Card key={job.id} borderWidth="1px" borderRadius="lg">
               <CardBody>
                 <Heading as="h3" size="md">
-                  {job.title}
+                  <Link to={`/job/${job.id}`}>{job.title}</Link> {/* Wrap job title with Link */}
                 </Heading>
                 <Text mt={2}>{job.category}</Text>
               </CardBody>
