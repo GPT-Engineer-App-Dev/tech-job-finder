@@ -1,17 +1,24 @@
 import { useParams } from "react-router-dom";
 import { Container, Heading, Text, VStack, Box } from "@chakra-ui/react";
-
-const jobDetails = {
-  1: { title: "Frontend Developer", category: "Engineering", description: "Develop and maintain user interfaces." },
-  2: { title: "Product Manager", category: "Product", description: "Oversee product development from start to finish." },
-  3: { title: "UI/UX Designer", category: "Design", description: "Design user interfaces and experiences." },
-  4: { title: "Backend Developer", category: "Engineering", description: "Develop and maintain server-side logic." },
-  5: { title: "Product Designer", category: "Design", description: "Design products with a focus on user experience." },
-};
+import { useJob } from "../integrations/supabase/index.js"; // Import the useJob hook
 
 const JobDetails = () => {
   const { id } = useParams();
-  const job = jobDetails[id];
+  const { data: job, error, isLoading } = useJob(id); // Fetch job from Supabase
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <Container maxW="container.lg" py={10}>
+        <Heading as="h1" size="2xl" textAlign="center">
+          Error loading job: {error.message}
+        </Heading>
+      </Container>
+    );
+  }
 
   if (!job) {
     return (
@@ -27,13 +34,13 @@ const JobDetails = () => {
     <Container maxW="container.lg" py={10}>
       <VStack spacing={6} align="stretch">
         <Heading as="h1" size="2xl" textAlign="center">
-          {job.title}
+          {job.jobs_title}
         </Heading>
         <Text fontSize="lg" textAlign="center">
-          Category: {job.category}
+          Category: {job.job_area}
         </Text>
         <Box p={5} shadow="md" borderWidth="1px">
-          <Text mt={4}>{job.description}</Text>
+          <Text mt={4}>Type: {job.job_type}</Text>
         </Box>
       </VStack>
     </Container>
